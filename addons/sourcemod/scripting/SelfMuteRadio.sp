@@ -18,7 +18,7 @@ public Plugin myinfo =
 	name			= "SelfMuteRadio",
 	author			= "maxime1907, Nano, Kelyan3",
 	description		= "Allows players to mute radio for themselves.",
-	version			= "1.0.0",
+	version			= "1.1",
 	url				= ""
 };
 
@@ -178,11 +178,11 @@ public int MenuHandler_SelfMuteRadio(Menu menu, MenuAction action, int param1, i
 			{
 				case 0:
 				{
-					Format(sBuffer, sizeof(sBuffer), "Radio sounds: %s", g_bSelfMuteRadioSound[param1] ? "Enabled" : "Disabled");
+					Format(sBuffer, sizeof(sBuffer), "Radio sounds: %s", g_bSelfMuteRadioSound[param1] ? "Disabled" : "Enabled");
 				}
 				case 1:
 				{
-					Format(sBuffer, sizeof(sBuffer), "Radio texts: %s", g_bSelfMuteRadioText[param1] ? "Enabled" : "Disabled");
+					Format(sBuffer, sizeof(sBuffer), "Radio texts: %s", g_bSelfMuteRadioText[param1] ? "Disabled" : "Enabled");
 				}
 				default: return 0;
 			}
