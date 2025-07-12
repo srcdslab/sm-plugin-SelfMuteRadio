@@ -48,16 +48,18 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_smradio", Command_SelfMuteRadio, "Mute radio sounds and texts");
 
 	// Late load
-	if (g_bLate)
+	if (!g_bLate)
+		return;
+
+	for (int i = 1; i <= MaxClients; i++)
 	{
-		for (int i = 1; i <= MaxClients; i++)
+		if(IsClientConnected(i))
 		{
-			if(IsClientConnected(i))
-			{
-				OnClientPutInServer(i);
-			}
+			OnClientPutInServer(i);
 		}
 	}
+
+	g_bLate = false;
 }
 
 public void OnPluginEnd()
@@ -67,6 +69,9 @@ public void OnPluginEnd()
 
 public void OnClientPutInServer(int client)
 {
+	if (!g_bLate)
+		return;
+
 	if (AreClientCookiesCached(client))
 		ReadClientCookies(client);
 }
