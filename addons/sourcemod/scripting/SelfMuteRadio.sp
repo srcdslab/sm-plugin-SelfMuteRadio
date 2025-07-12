@@ -7,7 +7,7 @@
 
 #pragma newdecls required
 
-Handle g_hSelfMuteRadioSound = INVALID_HANDLE, g_hSelfMuteRadioText = INVALID_HANDLE;
+Handle g_hSelfMuteRadioCookie = INVALID_HANDLE;
 
 bool g_bSelfMuteRadioSound[MAXPLAYERS + 1] = {false, ...}, g_bSelfMuteRadioText[MAXPLAYERS + 1] = {false, ...};
 
@@ -18,7 +18,7 @@ public Plugin myinfo =
 	name			= "SelfMuteRadio",
 	author			= "maxime1907, Nano, Kelyan3",
 	description		= "Allows players to mute radio for themselves.",
-	version			= "1.1",
+	version			= "1.2",
 	url				= ""
 };
 
@@ -30,8 +30,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
-	g_hSelfMuteRadioSound = RegClientCookie("radio_sound_blocked", "Block radio sounds", CookieAccess_Private);
-	g_hSelfMuteRadioText = RegClientCookie("radio_text_blocked", "Block radio texts", CookieAccess_Private);
+	g_hSelfMuteRadioCookie = RegClientCookie("radio_mute_settings", "Radio mute settings (sound:text)", CookieAccess_Private);
 
 	SetCookieMenuItem(CookieMenu_SelfMuteRadio, INVALID_HANDLE, "SelfMuteRadio Settings");
 
@@ -63,18 +62,6 @@ public void OnPluginStart()
 
 public void OnPluginEnd()
 {
-	// Late unload
-	if (g_bLate)
-	{
-		for (int i = 1; i <= MaxClients; i++)
-		{
-			if(IsClientConnected(i))
-			{
-				OnClientDisconnect(i);
-			}
-		}
-	}
-
 	Cleanup(true);
 }
 
@@ -87,11 +74,6 @@ public void OnClientPutInServer(int client)
 public void OnClientCookiesCached(int client)
 {
 	ReadClientCookies(client);
-}
-
-public void OnClientDisconnect(int client)
-{
-	SetClientCookies(client);
 }
 
 //   .d8888b.   .d88888b.  888b     d888 888b     d888        d8888 888b    888 8888888b.   .d8888b.
@@ -169,6 +151,7 @@ public int MenuHandler_SelfMuteRadio(Menu menu, MenuAction action, int param1, i
 				}
 				default: return 0;
 			}
+			SetClientCookies(param1);
 			DisplayMenu(menu, param1, MENU_TIME_FOREVER);
 		}
 		case MenuAction_DisplayItem:
@@ -345,35 +328,35 @@ public void RequestFrame_OnRadioText(DataPack pack)
 
 void Cleanup(bool bPluginEnd = false)
 {
-	if (bPluginEnd)
-	{
-		if (g_hSelfMuteRadioSound != INVALID_HANDLE)
-			CloseHandle(g_hSelfMuteRadioSound);
-		if (g_hSelfMuteRadioText != INVALID_HANDLE)
-			CloseHandle(g_hSelfMuteRadioText);
-	}
+	if (bPluginEnd && g_hSelfMuteRadioCookie != INVALID_HANDLE)
+		CloseHandle(g_hSelfMuteRadioCookie);
 }
 
 void ReadClientCookies(int client)
 {
-	char sBuffer[4];
+	char sBuffer[8];
 
-	GetClientCookie(client, g_hSelfMuteRadioSound, sBuffer, sizeof(sBuffer));
-	g_bSelfMuteRadioSound[client] = (sBuffer[0] == '\0' ? false : StringToInt(sBuffer) == 1);
-
-	GetClientCookie(client, g_hSelfMuteRadioText, sBuffer, sizeof(sBuffer));
-	g_bSelfMuteRadioText[client] = (sBuffer[0] == '\0' ? false : StringToInt(sBuffer) == 1);
+	GetClientCookie(client, g_hSelfMuteRadioCookie, sBuffer, sizeof(sBuffer));
+	
+	if (sBuffer[0] == '\0')
+	{
+		g_bSelfMuteRadioSound[client] = false;
+		g_bSelfMuteRadioText[client] = false;
+	}
+	else
+	{
+		g_bSelfMuteRadioSound[client] = (sBuffer[0] == '1');
+		g_bSelfMuteRadioText[client] = (sBuffer[1] == '1');
+	}
 }
 
 void SetClientCookies(int client)
 {
-	char sValue[4];
+	char sValue[8];
 
-	Format(sValue, sizeof(sValue), "%i", g_bSelfMuteRadioSound[client]);
-	SetClientCookie(client, g_hSelfMuteRadioSound, sValue);
-
-	Format(sValue, sizeof(sValue), "%i", g_bSelfMuteRadioText[client]);
-	SetClientCookie(client, g_hSelfMuteRadioText, sValue);
+	// Use chained format "%d%d" where first digit is sound, second is text
+	Format(sValue, sizeof(sValue), "%d%d", g_bSelfMuteRadioSound[client] ? 1 : 0, g_bSelfMuteRadioText[client] ? 1 : 0);
+	SetClientCookie(client, g_hSelfMuteRadioCookie, sValue);
 }
 
 bool IsValidClient(int client, bool nobots = true)
