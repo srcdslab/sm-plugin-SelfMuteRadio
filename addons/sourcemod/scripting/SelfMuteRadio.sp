@@ -81,6 +81,12 @@ public void OnClientCookiesCached(int client)
 	ReadClientCookies(client);
 }
 
+public void OnClientDisconnect(int client)
+{
+	g_bSelfMuteRadioSound[client] = false;
+	g_bSelfMuteRadioText[client] = false;
+}
+
 //   .d8888b.   .d88888b.  888b     d888 888b     d888        d8888 888b    888 8888888b.   .d8888b.
 //  d88P  Y88b d88P" "Y88b 8888b   d8888 8888b   d8888       d88888 8888b   888 888  "Y88b d88P  Y88b
 //  888    888 888     888 88888b.d88888 88888b.d88888      d88P888 88888b  888 888    888 Y88b.
@@ -342,16 +348,16 @@ void ReadClientCookies(int client)
 	char sBuffer[8];
 
 	GetClientCookie(client, g_hSelfMuteRadioCookie, sBuffer, sizeof(sBuffer));
-	
-	if (sBuffer[0] == '\0')
-	{
-		g_bSelfMuteRadioSound[client] = false;
-		g_bSelfMuteRadioText[client] = false;
-	}
-	else
+
+	if (strlen(sBuffer) >= 2)
 	{
 		g_bSelfMuteRadioSound[client] = (sBuffer[0] == '1');
 		g_bSelfMuteRadioText[client] = (sBuffer[1] == '1');
+	}
+	else
+	{
+		g_bSelfMuteRadioSound[client] = false;
+		g_bSelfMuteRadioText[client] = false;
 	}
 }
 
