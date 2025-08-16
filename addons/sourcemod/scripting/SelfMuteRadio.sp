@@ -18,7 +18,7 @@ public Plugin myinfo =
 	name			= "SelfMuteRadio",
 	author			= "maxime1907, Nano, Kelyan3",
 	description		= "Allows players to mute radio for themselves.",
-	version			= "1.2",
+	version			= "1.2.1",
 	url				= ""
 };
 
@@ -53,10 +53,10 @@ public void OnPluginStart()
 
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if(IsClientConnected(i))
-		{
-			OnClientPutInServer(i);
-		}
+		if (!IsClientConnected(i) || IsFakeClient(i) || !AreClientCookiesCached(i))
+			continue;
+
+		ReadClientCookies(i);
 	}
 
 	g_bLate = false;
@@ -65,15 +65,6 @@ public void OnPluginStart()
 public void OnPluginEnd()
 {
 	Cleanup(true);
-}
-
-public void OnClientPutInServer(int client)
-{
-	if (!g_bLate)
-		return;
-
-	if (AreClientCookiesCached(client))
-		ReadClientCookies(client);
 }
 
 public void OnClientCookiesCached(int client)
