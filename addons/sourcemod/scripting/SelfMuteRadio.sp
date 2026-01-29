@@ -18,7 +18,7 @@ public Plugin myinfo =
 	name			= "SelfMuteRadio",
 	author			= "maxime1907, Nano, Kelyan3",
 	description		= "Allows players to mute radio for themselves.",
-	version			= "1.2.1",
+	version			= "1.2.2",
 	url				= ""
 };
 
