@@ -15,9 +15,9 @@ This repository contains the **SelfMuteRadio** SourcePawn plugin for SourceMod, 
 
 ### Core Technologies
 - **Language**: SourcePawn (.sp files)
-- **Platform**: SourceMod 1.11+ (currently targeting 1.11.0-git6917)
-- **Build System**: SourceKnight (dependency management and compilation)
-- **Compiler**: SourcePawn Compiler (spcomp) via SourceKnight
+- **Platform**: SourceMod 1.12.x
+- **Build System**: Native GitHub Actions (rumblefrog/setup-sp)
+- **Compiler**: SourcePawn Compiler (spcomp)
 - **CI/CD**: GitHub Actions with automated building and releases
 
 ### Dependencies
@@ -41,7 +41,6 @@ This repository contains the **SelfMuteRadio** SourcePawn plugin for SourceMod, 
 │   └── dependabot.yml       # Dependency updates
 ├── addons/sourcemod/scripting/
 │   └── SelfMuteRadio.sp     # Main plugin source
-├── sourceknight.yaml        # Build configuration
 └── .gitignore              # Git ignore rules
 ```
 
@@ -91,9 +90,10 @@ When modifying this code, be aware of these patterns that should be modernized:
 
 ### Local Development Setup
 ```bash
-# Note: SourceKnight is not typically installed locally
-# Development usually relies on CI/CD pipeline for building
-# For syntax checking, ensure you have SourcePawn includes available
+# Development usually relies on the CI/CD pipeline for building
+# For local builds, install spcomp (SourceMod 1.12.x) and the
+# multicolors include, then compile with:
+#   spcomp -i include -o addons/sourcemod/plugins/SelfMuteRadio.smx addons/sourcemod/scripting/SelfMuteRadio.sp
 ```
 
 ### Testing Strategy
@@ -119,7 +119,7 @@ When modifying this code, be aware of these patterns that should be modernized:
 ### Build & Release Process
 
 #### GitHub Actions Workflow
-1. **Build**: Compiles plugin using SourceKnight action
+1. **Build**: Compiles plugin using `rumblefrog/setup-sp` (SourceMod 1.12.x) and `spcomp`
 2. **Package**: Creates distribution archive
 3. **Tag**: Auto-tags latest builds from main branch  
 4. **Release**: Publishes GitHub releases with compiled binaries
