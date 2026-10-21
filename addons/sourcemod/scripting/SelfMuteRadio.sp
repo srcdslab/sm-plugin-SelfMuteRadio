@@ -7,7 +7,7 @@
 
 #pragma newdecls required
 
-Handle g_hSelfMuteRadioCookie = INVALID_HANDLE;
+Cookie g_hSelfMuteRadioCookie = null;
 
 bool g_bSelfMuteRadioSound[MAXPLAYERS + 1] = {false, ...}, g_bSelfMuteRadioText[MAXPLAYERS + 1] = {false, ...};
 
@@ -18,7 +18,7 @@ public Plugin myinfo =
 	name			= "SelfMuteRadio",
 	author			= "maxime1907, Nano, Kelyan3",
 	description		= "Allows players to mute radio for themselves.",
-	version			= "1.2.2",
+	version			= "1.2.3",
 	url				= ""
 };
 
@@ -30,9 +30,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
-	g_hSelfMuteRadioCookie = RegClientCookie("radio_mute_settings", "Radio mute settings (sound:text)", CookieAccess_Private);
+	g_hSelfMuteRadioCookie = new Cookie("radio_mute_settings", "Radio mute settings (sound:text)", CookieAccess_Private);
 
-	SetCookieMenuItem(CookieMenu_SelfMuteRadio, INVALID_HANDLE, "SelfMuteRadio Settings");
+	SetCookieMenuItem(CookieMenu_SelfMuteRadio, 0, "SelfMuteRadio Settings");
 
 	UserMsg RadioText = GetUserMessageId("RadioText");
 	UserMsg SendAudio = GetUserMessageId("SendAudio");
@@ -108,10 +108,10 @@ public void DisplayCookieMenu(int client)
 	Menu menu = new Menu(MenuHandler_SelfMuteRadio, MENU_ACTIONS_DEFAULT | MenuAction_DisplayItem);
 	menu.ExitBackButton = true;
 	menu.ExitButton = true;
-	SetMenuTitle(menu, "SelfMuteRadio Settings");
-	AddMenuItem(menu, NULL_STRING, "Radio sounds");
-	AddMenuItem(menu, NULL_STRING, "Radio texts");
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+	menu.SetTitle("SelfMuteRadio Settings");
+	menu.AddItem(NULL_STRING, "Radio sounds");
+	menu.AddItem(NULL_STRING, "Radio texts");
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
 public void CookieMenu_SelfMuteRadio(int client, CookieMenuAction action, any info, char[] buffer, int maxlen)
@@ -154,7 +154,7 @@ public int MenuHandler_SelfMuteRadio(Menu menu, MenuAction action, int param1, i
 				default: return 0;
 			}
 			SetClientCookies(param1);
-			DisplayMenu(menu, param1, MENU_TIME_FOREVER);
+			menu.Display(param1, MENU_TIME_FOREVER);
 		}
 		case MenuAction_DisplayItem:
 		{
@@ -206,7 +206,8 @@ public Action Hook_UserMessageRadioText(UserMsg msg_id, Handle bf, const int[] p
 stock Action HandleSelfMuteSound(Handle bf, const int[] players, int playersNum)
 {
 	char sSound[128];
-	BfReadString(bf, sSound, sizeof(sSound), false);
+	BfRead bfRead = UserMessageToBfRead(bf);
+	bfRead.ReadString(sSound, sizeof(sSound), false);
 
 	if (StrContains(sSound, "Radio.", false) == -1)
 		return Plugin_Continue;
@@ -229,20 +230,21 @@ stock Action HandleSelfMuteSound(Handle bf, const int[] players, int playersNum)
 
 stock Action HandleSelfMuteText(Handle bf, const int[] players, int playersNum)
 {
-	int dest = BfReadByte(bf);
-	int client = BfReadByte(bf);
+	BfRead bfRead = UserMessageToBfRead(bf);
+	int dest = bfRead.ReadByte();
+	int client = bfRead.ReadByte();
 
 	char sSoundType[128];
-	BfReadString(bf, sSoundType, sizeof(sSoundType), false);
+	bfRead.ReadString(sSoundType, sizeof(sSoundType), false);
 
 	if (StrContains(sSoundType, "Game_radio", false) == -1)
 		return Plugin_Continue;
 
 	char sSoundName[128];
-	BfReadString(bf, sSoundName, sizeof(sSoundName), false);
+	bfRead.ReadString(sSoundName, sizeof(sSoundName), false);
 
 	char sSoundFile[128];
-	BfReadString(bf, sSoundFile, sizeof(sSoundFile), false);
+	bfRead.ReadString(sSoundFile, sizeof(sSoundFile), false);
 
 	int[] newPlayers = new int[playersNum];
 	int newPlayersNum = 0;
@@ -312,17 +314,18 @@ public void RequestFrame_OnRadioText(DataPack pack)
 		}
 	}
 
-	CloseHandle(pack);
+	delete pack;
 
 	Handle RadioText = StartMessage("RadioText", players, playersNum, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS);
 
-	if (RadioText != INVALID_HANDLE)
+	if (RadioText != null)
 	{
-		BfWriteByte(RadioText, dest);
-		BfWriteByte(RadioText, client);
-		BfWriteString(RadioText, sSoundType);
-		BfWriteString(RadioText, sSoundName);
-		BfWriteString(RadioText, sSoundFile);
+		BfWrite bfWrite = UserMessageToBfWrite(RadioText);
+		bfWrite.WriteByte(dest);
+		bfWrite.WriteByte(client);
+		bfWrite.WriteString(sSoundType);
+		bfWrite.WriteString(sSoundName);
+		bfWrite.WriteString(sSoundFile);
 	}
 
 	EndMessage();
@@ -330,15 +333,15 @@ public void RequestFrame_OnRadioText(DataPack pack)
 
 void Cleanup(bool bPluginEnd = false)
 {
-	if (bPluginEnd && g_hSelfMuteRadioCookie != INVALID_HANDLE)
-		CloseHandle(g_hSelfMuteRadioCookie);
+	if (bPluginEnd && g_hSelfMuteRadioCookie != null)
+		delete g_hSelfMuteRadioCookie;
 }
 
 void ReadClientCookies(int client)
 {
 	char sBuffer[8];
 
-	GetClientCookie(client, g_hSelfMuteRadioCookie, sBuffer, sizeof(sBuffer));
+	g_hSelfMuteRadioCookie.Get(client, sBuffer, sizeof(sBuffer));
 
 	if (strlen(sBuffer) >= 2)
 	{
@@ -358,7 +361,7 @@ void SetClientCookies(int client)
 
 	// Use chained format "%d%d" where first digit is sound, second is text
 	Format(sValue, sizeof(sValue), "%d%d", g_bSelfMuteRadioSound[client] ? 1 : 0, g_bSelfMuteRadioText[client] ? 1 : 0);
-	SetClientCookie(client, g_hSelfMuteRadioCookie, sValue);
+	g_hSelfMuteRadioCookie.Set(client, sValue);
 }
 
 bool IsValidClient(int client, bool nobots = true)
