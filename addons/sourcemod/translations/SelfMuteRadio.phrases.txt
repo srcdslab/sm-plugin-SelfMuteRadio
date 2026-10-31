@@ -1,0 +1,53 @@
+"Phrases"
+{
+	"SelfMuteRadio Settings"
+	{
+		"en"		"SelfMuteRadio Settings"
+		"fr"		"Paramètres SelfMuteRadio"
+		"ru"		"Настройки SelfMuteRadio"
+		"es"		"Ajustes de SelfMuteRadio"
+		"de"		"SelfMuteRadio-Einstellungen"
+		"pt"		"Configurações do SelfMuteRadio"
+		"chi"		"SelfMuteRadio 设置"
+	}
+	"Radio Sounds Enabled"
+	{
+		"en"		"Radio sounds: Enabled"
+		"fr"		"Sons radio : activés"
+		"ru"		"Звуки радио: включены"
+		"es"		"Sonidos de radio: activados"
+		"de"		"Funksounds: aktiviert"
+		"pt"		"Sons de rádio: ativados"
+		"chi"		"无线电声音：已启用"
+	}
+	"Radio Sounds Disabled"
+	{
+		"en"		"Radio sounds: Disabled"
+		"fr"		"Sons radio : désactivés"
+		"ru"		"Звуки радио: отключены"
+		"es"		"Sonidos de radio: desactivados"
+		"de"		"Funksounds: deaktiviert"
+		"pt"		"Sons de rádio: desativados"
+		"chi"		"无线电声音：已禁用"
+	}
+	"Radio Texts Enabled"
+	{
+		"en"		"Radio texts: Enabled"
+		"fr"		"Messages radio : activés"
+		"ru"		"Сообщения радио: включены"
+		"es"		"Mensajes de radio: activados"
+		"de"		"Funknachrichten: aktiviert"
+		"pt"		"Mensagens de rádio: ativadas"
+		"chi"		"无线电文字：已启用"
+	}
+	"Radio Texts Disabled"
+	{
+		"en"		"Radio texts: Disabled"
+		"fr"		"Messages radio : désactivés"
+		"ru"		"Сообщения радио: отключены"
+		"es"		"Mensajes de radio: desactivados"
+		"de"		"Funknachrichten: deaktiviert"
+		"pt"		"Mensagens de rádio: desativadas"
+		"chi"		"无线电文字：已禁用"
+	}
+}
