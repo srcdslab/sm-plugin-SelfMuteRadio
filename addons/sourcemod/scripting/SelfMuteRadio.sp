@@ -18,7 +18,7 @@ public Plugin myinfo =
 	name			= "SelfMuteRadio",
 	author			= "maxime1907, Nano, Kelyan3",
 	description		= "Allows players to mute radio for themselves.",
-	version			= "1.2.3",
+	version			= "1.2.4",
 	url				= ""
 };
 
@@ -30,6 +30,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
+	LoadTranslations("SelfMuteRadio.phrases");
+
 	g_hSelfMuteRadioCookie = new Cookie("radio_mute_settings", "Radio mute settings (sound:text)", CookieAccess_Private);
 
 	SetCookieMenuItem(CookieMenu_SelfMuteRadio, 0, "SelfMuteRadio Settings");
@@ -108,7 +110,7 @@ public void DisplayCookieMenu(int client)
 	Menu menu = new Menu(MenuHandler_SelfMuteRadio, MENU_ACTIONS_DEFAULT | MenuAction_DisplayItem);
 	menu.ExitBackButton = true;
 	menu.ExitButton = true;
-	menu.SetTitle("SelfMuteRadio Settings");
+	menu.SetTitle("%T", "SelfMuteRadio Settings", client);
 	menu.AddItem(NULL_STRING, "Radio sounds");
 	menu.AddItem(NULL_STRING, "Radio texts");
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -118,6 +120,10 @@ public void CookieMenu_SelfMuteRadio(int client, CookieMenuAction action, any in
 {
 	switch(action)
 	{
+		case CookieMenuAction_DisplayOption:
+		{
+			Format(buffer, maxlen, "%T", "SelfMuteRadio Settings", client);
+		}
 		case CookieMenuAction_SelectOption:
 		{
 			DisplayCookieMenu(client);
@@ -158,16 +164,16 @@ public int MenuHandler_SelfMuteRadio(Menu menu, MenuAction action, int param1, i
 		}
 		case MenuAction_DisplayItem:
 		{
-			char sBuffer[32];
+			char sBuffer[128];
 			switch(param2)
 			{
 				case 0:
 				{
-					Format(sBuffer, sizeof(sBuffer), "Radio sounds: %s", g_bSelfMuteRadioSound[param1] ? "Disabled" : "Enabled");
+					Format(sBuffer, sizeof(sBuffer), "%T", g_bSelfMuteRadioSound[param1] ? "Radio Sounds Disabled" : "Radio Sounds Enabled", param1);
 				}
 				case 1:
 				{
-					Format(sBuffer, sizeof(sBuffer), "Radio texts: %s", g_bSelfMuteRadioText[param1] ? "Disabled" : "Enabled");
+					Format(sBuffer, sizeof(sBuffer), "%T", g_bSelfMuteRadioText[param1] ? "Radio Texts Disabled" : "Radio Texts Enabled", param1);
 				}
 				default: return 0;
 			}
