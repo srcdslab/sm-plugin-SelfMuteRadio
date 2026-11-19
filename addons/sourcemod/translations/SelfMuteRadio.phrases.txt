@@ -9,6 +9,12 @@
 		"de"		"SelfMuteRadio-Einstellungen"
 		"pt"		"Configurações do SelfMuteRadio"
 		"chi"		"SelfMuteRadio 设置"
+		"pl"		"Ustawienia SelfMuteRadio"
+		"tr"		"SelfMuteRadio Ayarları"
+		"it"		"Impostazioni SelfMuteRadio"
+		"ua"		"Налаштування SelfMuteRadio"
+		"zho"		"SelfMuteRadio 設定"
+		"cze"		"Nastavení SelfMuteRadio"
 	}
 	"Radio Sounds Enabled"
 	{
@@ -19,6 +25,12 @@
 		"de"		"Funksounds: aktiviert"
 		"pt"		"Sons de rádio: ativados"
 		"chi"		"无线电声音：已启用"
+		"pl"		"Dźwięki radia: włączone"
+		"tr"		"Telsiz sesleri: Açık"
+		"it"		"Suoni radio: attivati"
+		"ua"		"Звуки рації: увімкнено"
+		"zho"		"無線電音效：已啟用"
+		"cze"		"Zvuky vysílačky: zapnuty"
 	}
 	"Radio Sounds Disabled"
 	{
@@ -29,6 +41,12 @@
 		"de"		"Funksounds: deaktiviert"
 		"pt"		"Sons de rádio: desativados"
 		"chi"		"无线电声音：已禁用"
+		"pl"		"Dźwięki radia: wyłączone"
+		"tr"		"Telsiz sesleri: Kapalı"
+		"it"		"Suoni radio: disattivati"
+		"ua"		"Звуки рації: вимкнено"
+		"zho"		"無線電音效：已停用"
+		"cze"		"Zvuky vysílačky: vypnuty"
 	}
 	"Radio Texts Enabled"
 	{
@@ -39,6 +57,12 @@
 		"de"		"Funknachrichten: aktiviert"
 		"pt"		"Mensagens de rádio: ativadas"
 		"chi"		"无线电文字：已启用"
+		"pl"		"Wiadomości radiowe: włączone"
+		"tr"		"Telsiz mesajları: Açık"
+		"it"		"Messaggi radio: attivati"
+		"ua"		"Повідомлення рації: увімкнено"
+		"zho"		"無線電文字：已啟用"
+		"cze"		"Zprávy vysílačky: zapnuty"
 	}
 	"Radio Texts Disabled"
 	{
@@ -49,5 +73,11 @@
 		"de"		"Funknachrichten: deaktiviert"
 		"pt"		"Mensagens de rádio: desativadas"
 		"chi"		"无线电文字：已禁用"
+		"pl"		"Wiadomości radiowe: wyłączone"
+		"tr"		"Telsiz mesajları: Kapalı"
+		"it"		"Messaggi radio: disattivati"
+		"ua"		"Повідомлення рації: вимкнено"
+		"zho"		"無線電文字：已停用"
+		"cze"		"Zprávy vysílačky: vypnuty"
 	}
 }
